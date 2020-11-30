@@ -1,38 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, FlatList, Text, Image, ScrollView } from 'react-native';
+import { StyleSheet, View, FlatList, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import SpaceImageInfo from '../type'
 import LinearGradient from 'react-native-linear-gradient';
 
 const defaultSpaceImageInfo: SpaceImageInfo = {
   explanation:'',
-  url: '',
+  url: 's',
   title: '',
 }
 
-var spaceImageMenu: Array<SpaceImageInfo>; 
+var defaultSpaceImageMenu: Array<SpaceImageInfo> = []; 
 
-const fetchSpace2 = async ()=> {
-  const res = await axios.get(`https://api.nasa.gov/planetary/apod?api_key=WhByMRZJprCuHauxRl3Idr3O6kbE48aq5VbLgeNT`)   
-  spaceImageMenu = [{explanation: res.data.explanation, url: res.data.url, title: res.data.title}]
-  console.log("al")
-}
-
-fetchSpace2()
-
-//https://nasa-apod-ynov.herokuapp.com/?date=2020-11-25
 const SpaceInfo = () => {
 
   const [newSpaceImageInfo, setSpaceImageInfo] = useState<SpaceImageInfo>(defaultSpaceImageInfo)
+  const [newSpaceImageMenu, setSpaceImageMenu] = useState<Array<SpaceImageInfo>>(defaultSpaceImageMenu)
 
   useEffect(() => { 
+    fetchSpaceImageMenu()
     fetchSpace()
   }, []);
+
+
+  const fetchSpaceImageMenu = async ()=> {
+    var spaceImageMenu : SpaceImageInfo[] = defaultSpaceImageMenu
+    for (let i = 0; i < 5; i++) {
+      const todayDate = new Date()
+      todayDate.setDate(todayDate.getDate() - i)
+      const dateAsk = todayDate.getFullYear() + "-" + (todayDate.getMonth() +1 ) + "-" + todayDate.getDate()
+      const res = await axios.get(`https://api.nasa.gov/planetary/apod?date=${dateAsk}&api_key=WhByMRZJprCuHauxRl3Idr3O6kbE48aq5VbLgeNT`)   
+      spaceImageMenu.push({explanation: res.data.explanation, url: res.data.url, title: res.data.title})
+    }
+    setSpaceImageMenu([...spaceImageMenu])
+  }
 
   const fetchSpace = async ()=> {
     const res = await axios.get(`https://api.nasa.gov/planetary/apod?api_key=WhByMRZJprCuHauxRl3Idr3O6kbE48aq5VbLgeNT`)   
     setSpaceImageInfo({explanation: res.data.explanation, url: res.data.url, title: res.data.title})
   }   
+
+  const changeImage = (spaceImageInfo: SpaceImageInfo) => {
+    setSpaceImageInfo(spaceImageInfo)
+  }
 
   return (
     <View style={styles.container}> 
@@ -40,14 +50,20 @@ const SpaceInfo = () => {
         <View style={styles.contrainerFlatlist}>
           <FlatList
             horizontal={true}
-            data = {spaceImageMenu}
-            renderItem = {({item}) => <Image style={styles.imageMenu} source={{uri:`${item.url}`}} /> }
+            data = {newSpaceImageMenu}
+            renderItem = {({item}) => 
+              <TouchableOpacity onPress={() => changeImage(item)}>
+                <Image style={styles.imageMenu} source={{uri:`${item.url}`}} /> 
+              </TouchableOpacity>
+            }
             keyExtractor = {((item) => item.title + "" + item.url)}
           />
         </View>
+        <LinearGradient colors={["black", "#ffffff00"]} style={styles.linearGradientTop} />
         <View style={styles.imageContainer}>
           <Image source={{uri:`${newSpaceImageInfo.url}`}} style={styles.image}></Image> 
         </View>
+        <LinearGradient colors={[ "#ffffff00", "black"]} style={styles.linearGradientBottom} />
         <View style={styles.text}>
           <Text style={styles.title}>{newSpaceImageInfo.title}</Text>
           <Text style={styles.explanation}>{newSpaceImageInfo.explanation}</Text>
@@ -64,8 +80,10 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: 400,
-    height: 650,
+    height: 580,
   },
+  //j'ai préféré ne pas détériorer la qualité de l'image 
+  //alors elle se retrouve un peu zoomé, on ne voit pas totalement les côtés de l'image mais c'est un choix
   image: {
     width: '100%',
     height: '100%',
@@ -80,10 +98,20 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     borderRadius: 18    
   },
+  linearGradientTop: {
+    height: 250,
+    marginBottom: -250,
+    zIndex:1
+  },
+  linearGradientBottom: {
+    height: 120,
+    marginTop: -120,
+    zIndex:0
+  },
   contrainerFlatlist: {
     paddingLeft: 20,
     paddingTop: 20,
-    paddingBottom: 20
+    paddingBottom: 10
   },
   text: {
     marginTop: -350,
