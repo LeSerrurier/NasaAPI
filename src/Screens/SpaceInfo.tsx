@@ -31,7 +31,7 @@ const SpaceInfo: React.FC<Props> = ({ navigation }) => {
   
     const fetchSpaceImageMenu = async ()=> {
       var spaceImageMenu : SpaceImageInfo[] = defaultSpaceImageMenu
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 6; i++) {
         const todayDate = new Date()
         todayDate.setDate(todayDate.getDate() - i)
         const dateAsk = todayDate.getFullYear() + "-" + (todayDate.getMonth() +1 ) + "-" + todayDate.getDate()
