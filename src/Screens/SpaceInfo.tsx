@@ -66,14 +66,14 @@ const SpaceInfo: React.FC<Props> = ({ navigation }) => {
             />
           </View>
 
-            <TouchableOpacity onPress={ () => navigation.navigate("SpaceImageFull") }>
+            <TouchableOpacity onPress={ () => navigation.navigate("SpaceImageFull", {spaceImageInfo: newSpaceImageInfo}) }>
                 <LinearGradient colors={["black", "#ffffff00"]} style={styles.linearGradientTop} />
                 <View style={styles.imageContainer}>
                     <Image source={{uri:`${newSpaceImageInfo.url}`}} style={styles.image}></Image> 
                 </View>
-            </TouchableOpacity>
-        
+            </TouchableOpacity>      
           <LinearGradient colors={[ "#ffffff00", "black"]} style={styles.linearGradientBottom} />
+
           <View style={styles.text}>
             <Text style={styles.title}>{newSpaceImageInfo.title}</Text>
             <Text style={styles.explanation}>{newSpaceImageInfo.explanation}</Text>
@@ -124,11 +124,11 @@ const styles = StyleSheet.create({
         paddingBottom: 10
     },
     text: {
-        marginTop: -300,
+        marginTop: -250,
         marginRight: 20,
         marginLeft: 20,
         marginBottom: 80,
-        backgroundColor: 'rgba(0,0,0,0.1)'
+        backgroundColor: 'rgba(0,0,0,0.1)',
     },
     title: {
         fontSize: 40,
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     explanation: {
-        fontSize: 20,
+        fontSize: 19,
         color: "white",
     }
 });

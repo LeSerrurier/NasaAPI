@@ -1,20 +1,54 @@
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, TextInput, View, FlatList, TouchableOpacity} from 'react-native';
+import { Image, StyleSheet, Text, TextInput, View, FlatList, TouchableOpacity} from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { MainStackParamsList } from '../../App';
+import { RouteProp } from '@react-navigation/native';
+import SpaceImageInfo from '../type'
+import LinearGradient from 'react-native-linear-gradient';
 
 type Props = {
-    navigation: StackNavigationProp<MainStackParamsList>
+    navigation: StackNavigationProp<MainStackParamsList>,
+    route: RouteProp<MainStackParamsList, "SpaceImageFull">
 }
 
-const Search: React.FC<Props> = ({ navigation }) => {
+const Search: React.FC<Props> = ({ navigation, route }) => {
+
+    const [newSpaceImageInfo, setNewSpaceImageInfo] = useState<SpaceImageInfo>(
+        route.params.spaceImageInfo
+    );
 
     return (
-        <View>
-           <Text>LAAA</Text>
+        <View style={styles.container}>
+            <LinearGradient colors={["black", "#ffffff00"]} style={styles.linearGradientTop} />
+            <Image source={{uri:`${newSpaceImageInfo.url}`}} style={styles.image}></Image> 
+            <LinearGradient colors={[ "#ffffff00", "black"]} style={styles.linearGradientBottom} />
         </View>
 
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        paddingBottom: 50,
+        paddingTop: 10,
+        backgroundColor: "black"
+    },
+    image: {
+        width: '100%',
+        height: '100%',
+        resizeMode: "cover",
+        justifyContent: "center",
+    },
+    linearGradientTop: {
+        height: 250,
+        marginBottom: -250,
+        zIndex:1,
+    },
+    linearGradientBottom: {
+        height: 120,
+        marginTop: -120,
+        zIndex:0,
+    },
+});
 
 export default Search
