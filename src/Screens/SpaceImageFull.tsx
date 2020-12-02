@@ -13,6 +13,13 @@ type Props = {
 
 const Search: React.FC<Props> = ({ navigation, route }) => {
 
+    /*j'aurais voulu m'y prendre autrement (utiliser un component) pour ne pas avoir de la répétition 
+    de code, mais j'ai perdu beaucoup de temps à faire fonctionner la navigation
+    et j'aurais voulu aussi changer la flèche de retour mais j'ai perdu trop
+    de temps à résoudre les problèmes que j'avais entre le système de navigation
+    et git.
+    */
+
     const [newSpaceImageInfo, setNewSpaceImageInfo] = useState<SpaceImageInfo>(
         route.params.spaceImageInfo
     );
